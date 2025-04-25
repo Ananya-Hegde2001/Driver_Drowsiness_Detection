@@ -1,7 +1,7 @@
 # 💤 Driver Drowsiness Detection System 🚗 
 The Driver Drowsiness Detection System is a smart safety solution designed to monitor a driver's alertness in real-time and help prevent road accidents caused by fatigue or drowsiness. The system uses a combination of hardware components and Python-based software to detect signs of drowsiness such as eye closure and head nodding. When drowsiness is detected, an immediate alert is triggered via a buzzer to wake up the driver and ensure road safety.
 
-🛠️ Technologies & Tools
+## 🛠️ Technologies & Tools
 Hardware Components:
 
 ➤ ESP32 Microcontroller
@@ -14,7 +14,7 @@ Hardware Components:
 
 ➤ USB Cable and Power Supply
 
-Software & Tools:
+## Software & Tools:
 
 ➤ Python (for serial communication and alert logic)
 
@@ -30,7 +30,7 @@ Software & Tools:
 
 ➤ Email SMTP module
 
-⚙️ Features
+## ⚙️ Features
 
 👁️ Eye Blink Detection: Uses an IR sensor to monitor eye blinks and detect prolonged eye closure.
 
@@ -46,7 +46,7 @@ Software & Tools:
 
 🔒 Authority Access: Secure login for authorized personnel to view drowsiness logs and take actions.
 
-🧪 How It Works
+## 🧪 How It Works
 
 1. The IR Sensor detects the frequency and duration of eye blinks.
 
@@ -62,7 +62,7 @@ Software & Tools:
 
 4. The dashboard updates the driver's condition in real-time, accessible to concerned authorities.
 
-📦 Future Enhancements
+## 📦 Future Enhancements
 
 📷 Integration with a camera and computer vision for more accurate face/eye monitoring.
 
@@ -72,7 +72,7 @@ Software & Tools:
 
 🧠 AI-based behavior analysis for predictive drowsiness alerts.
 
-📁 Project Structure
+## 📁 Project Structure
 
 ```rust
 ├── Arduino/
@@ -88,7 +88,8 @@ Software & Tools:
 └── LICENSE
 ```
 
-🚀 How to Run
+## 🚀 How to Run
+
 ▸ Upload Arduino code to the ESP32 using Arduino IDE.
 
 ▸ Connect the sensors (IR + Accelerometer) and buzzer to ESP32 as per circuit diagram.
