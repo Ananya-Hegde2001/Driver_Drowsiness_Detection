@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drowsiness Detection Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <!-- Updated to the latest EmailJS SDK version -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 { color: #333; }
+    .status {
+      font-size: 22px;
+      margin: 10px auto;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 10px;
+      width: fit-content;
+    }
+    .drowsy { background: crimson; }
+    .alert { background: seagreen; }
+    select {
+      padding: 10px;
+      font-size: 16px;
+      margin: 20px 0;
+    }
+    .driver-box {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
+      background: white;
+      width: 320px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🚗 Driver Drowsiness Dashboard</h1>
+
+  <label>Select Driver:</label>
+  <select id="driverSelect">
+    <option value="D001">Driver D001</option>
+    <option value="D002">Driver D002</option>
+    <option value="D003">Driver D003</option>
+  </select>
+
+  <div class="driver-box">
+    <h2 id="driverId">Driver ID: D001</h2>
+    <div id="status" class="status">Loading...</div>
+    <p id="time">Last Update: --</p>
+  </div>
+
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCwtg0GRy0t94F6Y6_wsMfx16_a8JPKIsA",
+    authDomain: "driver-drowziness-detection.firebaseapp.com",
+    databaseURL: "https://driver-drowziness-detection-default-rtdb.firebaseio.com",
+    projectId: "driver-drowziness-detection",
+    storageBucket: "driver-drowziness-detection.appspot.com",
+    messagingSenderId: "908545324282",
+    appId: "1:908545324282:web:188092f3d52b110d5dc543"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Initialize EmailJS with the new SDK method
+  (function() {
+    emailjs.init("aaHSqwbVXRCTPS0b4");
+  })();
+
+  const driverSelect = document.getElementById("driverSelect");
+  const driverIdText = document.getElementById("driverId");
+  const statusEl = document.getElementById("status");
+  const timeEl = document.getElementById("time");
+
+  let currentDriver = driverSelect.value;
+  let previousDrowsyStatus = null;
+
+  function listenToDriver(driverID) {
+    currentDriver = driverID;
+    driverIdText.textContent = "Driver ID: " + driverID;
+    db.ref("drivers/" + driverID).off(); // Remove previous
+    db.ref("drivers/" + driverID).on("value", updateDashboard);
+  }
+
+  function updateDashboard(snapshot) {
+    const data = snapshot.val();
+    console.log("📡 Firebase Data:", data); // Debug: Firebase data
+
+    if (!data) return;
+
+    const isDrowsy = data.drowsy;
+    const timestamp = data.timestamp;
+
+    statusEl.textContent = isDrowsy ? "DROWSY 🚨" : "Normal 😊";
+    statusEl.className = "status " + (isDrowsy ? "drowsy" : "alert");
+    timeEl.textContent = "Last Update: " + timestamp;
+
+    if (isDrowsy && previousDrowsyStatus !== true) {
+      console.log("🚨 Drowsiness detected. Sending alert email...");
+      sendEmailAlert(currentDriver, timestamp);
+    }
+    previousDrowsyStatus = isDrowsy;
+  }
+
+  function sendEmailAlert(driverId, timestamp) {
+    console.log("📤 Sending Email | Driver:", driverId, "| Time:", timestamp); // Debug: before sending
+
+    // Updated EmailJS send method syntax for the new SDK version
+    emailjs.send("service_2vrkajc", "template_zcz3y4v", {
+      driver_id: driverId,
+      timestamp: timestamp
+    }).then(function(response) {
+      console.log("✅ Email sent successfully!", response.status, response.text); // Debug: success
+    }, function(error) {
+      console.error("❌ Email send error:", error); // Debug: error
+    });
+  }
+
+  driverSelect.addEventListener("change", (e) => {
+    listenToDriver(e.target.value);
+  });
+
+  // Initial listener
+  listenToDriver(currentDriver);
+</script>
+
+</body>
+</html>
