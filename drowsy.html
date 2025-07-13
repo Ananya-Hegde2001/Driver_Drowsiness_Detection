@@ -91,7 +91,7 @@
     db.ref("drivers/" + driverID).off(); // Remove previous
     db.ref("drivers/" + driverID).on("value", updateDashboard);
   }
-
+//its to update the Dashboard
   function updateDashboard(snapshot) {
     const data = snapshot.val();
     console.log("📡 Firebase Data:", data); // Debug: Firebase data
